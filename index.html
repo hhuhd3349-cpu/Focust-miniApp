@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus & Routine Buddy</title>
+<meta name="description" content="A Pomodoro timer and routine blueprints for a distraction-free day.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="paper-edge" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wordmark-row">
+    <span class="wordmark">Focus <span class="amp">&amp;</span> Routine Buddy</span>
+  </div>
+  <p class="tagline">One dial, one queue, one tab open. Tap Start and let the session carry you.</p>
+</header>
+
+<main>
+
+  <!-- ===== HERO: THE TIMER ITSELF ===== -->
+  <section class="timer-hero" id="start" aria-label="Pomodoro timer">
+
+    <div class="mode-switch" role="tablist" aria-label="Session type">
+      <button class="mode-btn is-active" data-mode="focus" role="tab" aria-selected="true">Focus</button>
+      <button class="mode-btn" data-mode="short" role="tab" aria-selected="false">Short break</button>
+      <button class="mode-btn" data-mode="long" role="tab" aria-selected="false">Long break</button>
+    </div>
+
+    <div class="dial-wrap">
+      <svg class="dial" viewBox="0 0 300 300" role="img" aria-labelledby="dialTitle">
+        <title id="dialTitle">Session timer dial</title>
+        <g class="ticks" id="ticks"></g>
+        <circle class="dial-track" cx="150" cy="150" r="118"></circle>
+        <circle class="dial-progress" id="dialProgress" cx="150" cy="150" r="118"></circle>
+      </svg>
+      <div class="dial-center">
+        <span class="time" id="timeDisplay">25:00</span>
+        <span class="dial-label" id="dialLabel">Focus session</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="resetBtn" class="ghost-btn" type="button">Reset</button>
+      <button id="startBtn" class="primary-btn" type="button">Start</button>
+      <button id="skipBtn" class="ghost-btn" type="button">Skip</button>
+    </div>
+
+    <div class="tally-row">
+      <span class="tally-label">Today's focus sessions</span>
+      <div class="tally" id="tally" aria-live="polite"></div>
+    </div>
+
+    <details class="customize">
+      <summary>Customize session lengths</summary>
+      <div class="customize-grid">
+        <label>Focus
+          <input type="number" id="focusMin" min="1" max="90" value="25">
+          <span class="unit">min</span>
+        </label>
+        <label>Short break
+          <input type="number" id="shortMin" min="1" max="30" value="5">
+          <span class="unit">min</span>
+        </label>
+        <label>Long break
+          <input type="number" id="longMin" min="1" max="60" value="15">
+          <span class="unit">min</span>
+        </label>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== QUEUE PANEL (shown when a routine is running) ===== -->
+  <section class="queue-panel" id="queuePanel" hidden aria-label="Active routine progress">
+    <div class="queue-head">
+      <h2 id="queueTitle">Routine</h2>
+      <button id="leaveRoutineBtn" class="text-btn" type="button">Leave routine</button>
+    </div>
+    <div class="queue-steps" id="queueSteps"></div>
+  </section>
+
+  <!-- ===== ROUTINE BLUEPRINTS ===== -->
+  <section class="routines" id="routines" aria-label="Routine blueprints">
+    <h2>Routine blueprints</h2>
+    <p class="section-sub">A blueprint is a pre-built queue of sessions. Pick one, hit start, and the timer walks the rest for you.</p>
+
+    <div class="routine-grid">
+
+      <article class="routine-card" data-routine="deepwork">
+        <span class="routine-eyebrow">4 rounds · 2h 5m</span>
+        <h3>Deep Work Block</h3>
+        <p>Four uninterrupted 25s with short recovery, closed out by a real rest.</p>
+        <div class="routine-sequence" aria-hidden="true">
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-long">L</span>
+        </div>
+        <button class="routine-btn" type="button">Load this blueprint</button>
+      </article>
+
+      <article class="routine-card" data-routine="morning">
+        <span class="routine-eyebrow">3 rounds · 1h 20m</span>
+        <h3>Morning Launch</h3>
+        <p>Short focus sprints to clear inbox and small tasks before the day gets loud.</p>
+        <div class="routine-sequence" aria-hidden="true">
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-long">L</span>
+        </div>
+        <button class="routine-btn" type="button">Load this blueprint</button>
+      </article>
+
+      <article class="routine-card" data-routine="study">
+        <span class="routine-eyebrow">6 rounds · 3h</span>
+        <h3>Study Sprint</h3>
+        <p>Six tight rounds for exam prep or dense reading, with a long break at the midpoint.</p>
+        <div class="routine-sequence" aria-hidden="true">
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-long">L</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-long">L</span>
+        </div>
+        <button class="routine-btn" type="button">Load this blueprint</button>
+      </article>
+
+      <article class="routine-card" data-routine="evening">
+        <span class="routine-eyebrow">2 rounds · 55m</span>
+        <h3>Evening Wind-down</h3>
+        <p>Two gentle rounds to close open loops before you log off for the night.</p>
+        <div class="routine-sequence" aria-hidden="true">
+          <span class="chip chip-focus">F</span><span class="chip chip-short">s</span>
+          <span class="chip chip-focus">F</span><span class="chip chip-long">L</span>
+        </div>
+        <button class="routine-btn" type="button">Load this blueprint</button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how" aria-label="How it works">
+    <div class="how-item">
+      <span class="how-mark">Focus</span>
+      <p>Work the dial down in one sitting. No tab-switching, no half-attention.</p>
+    </div>
+    <div class="how-item">
+      <span class="how-mark">Break</span>
+      <p>Short breaks reset your eyes. Long breaks reset your energy. Both are part of the work.</p>
+    </div>
+    <div class="how-item">
+      <span class="how-mark">Repeat</span>
+      <p>Every completed focus session earns a mark on today's tally. Watch the row fill in.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Built for staying off other tabs. Your tallies live in this browser only.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
