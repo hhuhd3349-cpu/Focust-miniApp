@@ -1,0 +1,570 @@
+/* ============================================================
+   Focus & Routine Buddy — visual identity
+   Palette:  parchment surface, charcoal ink, three session
+   accents (teal = focus, amber = short break, indigo = long
+   break) standing in for concentration / quick recharge / rest.
+   Display face: Fraunces (characterful serif, used with restraint)
+   Body face: IBM Plex Sans   Data face: IBM Plex Mono
+   ============================================================ */
+
+:root {
+  --bg: #ece7dd;
+  --surface: #f8f5ee;
+  --surface-line: #d8d0bf;
+  --ink: #23262f;
+  --ink-soft: #5b5f6b;
+  --ink-faint: #8b8d94;
+
+  --focus: #1f6f63;
+  --focus-soft: #dbe8e2;
+  --short: #b8791f;
+  --short-soft: #f0e2c9;
+  --long: #4a4e8f;
+  --long-soft: #e2e2ef;
+
+  --radius-lg: 28px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+
+  --accent: var(--focus);
+  --accent-soft: var(--focus-soft);
+
+  --shadow-card: 0 1px 0 rgba(35,38,47,0.04), 0 12px 24px -16px rgba(35,38,47,0.25);
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: light; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(35,38,47,0.055) 1px, transparent 0);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+main { display: block; }
+
+a { color: inherit; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ===================== Layout shell ===================== */
+
+.site-header,
+.timer-hero,
+.queue-panel,
+.routines,
+.how,
+.site-footer {
+  width: min(760px, 100% - 2.5rem);
+  margin-inline: auto;
+}
+
+/* ===================== Header ===================== */
+
+.site-header {
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+  padding-bottom: 1.5rem;
+  text-align: center;
+}
+
+.wordmark {
+  font-family: "Fraunces", Georgia, serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 5vw, 2.75rem);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.wordmark .amp {
+  font-style: italic;
+  color: var(--accent);
+  transition: color 0.4s ease;
+}
+
+.tagline {
+  margin: 0.75rem auto 0;
+  max-width: 34ch;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+}
+
+/* ===================== Timer hero ===================== */
+
+.timer-hero {
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.4s ease;
+}
+
+.mode-switch {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  background: var(--bg);
+  border-radius: 999px;
+  border: 1px solid var(--surface-line);
+}
+
+.mode-btn {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1.05rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: background 0.25s ease, color 0.25s ease;
+  white-space: nowrap;
+}
+
+.mode-btn.is-active {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+/* ---- The dial: the signature element ---- */
+
+.dial-wrap {
+  position: relative;
+  width: min(280px, 62vw);
+  height: min(280px, 62vw);
+  margin: 2.1rem 0 1.6rem;
+}
+
+.dial { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.ticks line {
+  stroke: var(--surface-line);
+  stroke-width: 1.4;
+}
+.ticks line.tick-major {
+  stroke: var(--ink-faint);
+  stroke-width: 2.2;
+}
+
+.dial-track {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 10;
+}
+
+.dial-progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 741.4;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.4s ease;
+}
+
+.dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.time {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(2.4rem, 8vw, 3.1rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dial-label {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--accent);
+  font-weight: 600;
+  transition: color 0.4s ease;
+}
+
+/* ---- Controls ---- */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.primary-btn,
+.ghost-btn {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.7rem;
+  transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.primary-btn {
+  background: var(--accent);
+  border: 1px solid transparent;
+  color: var(--surface);
+  min-width: 132px;
+}
+.primary-btn:hover { transform: translateY(-1px); }
+.primary-btn:active { transform: translateY(0); }
+
+.ghost-btn {
+  background: transparent;
+  border: 1px solid var(--surface-line);
+  color: var(--ink-soft);
+}
+.ghost-btn:hover { border-color: var(--ink-faint); color: var(--ink); }
+
+.text-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+}
+.text-btn:hover { color: var(--ink); }
+
+/* ---- Tally (punch-card row) ---- */
+
+.tally-row {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tally-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.tally {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  max-width: 320px;
+}
+
+.tally-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--surface-line);
+  background: transparent;
+}
+
+.tally-dot.is-filled {
+  background: var(--focus);
+  border-color: var(--focus);
+}
+
+/* ---- Customize disclosure ---- */
+
+.customize {
+  margin-top: 1.75rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.customize summary {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  cursor: pointer;
+  list-style: none;
+}
+.customize summary::-webkit-details-marker { display: none; }
+.customize summary:hover { color: var(--ink-soft); }
+
+.customize-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.customize-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.customize-grid input {
+  width: 100%;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  padding: 0.5rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1rem;
+  color: var(--ink);
+  text-align: center;
+}
+
+.customize-grid .unit {
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+}
+
+/* ===================== Queue panel ===================== */
+
+.queue-panel {
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  margin-top: 1rem;
+}
+
+.queue-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.queue-head h2 {
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.queue-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.queue-step {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1.5px solid var(--surface-line);
+  color: var(--ink-faint);
+}
+
+.queue-step.step-focus { color: var(--focus); }
+.queue-step.step-short { color: var(--short); }
+.queue-step.step-long { color: var(--long); }
+
+.queue-step.is-done {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.queue-step.is-current {
+  border-color: currentColor;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ===================== Routines ===================== */
+
+.routines {
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+}
+
+.routines h2 {
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.4rem, 3.4vw, 1.8rem);
+  margin-bottom: 0.4rem;
+}
+
+.section-sub {
+  color: var(--ink-soft);
+  margin-top: 0;
+  max-width: 52ch;
+}
+
+.routine-grid {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.routine-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-md);
+  padding: 1.4rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.routine-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-faint);
+}
+
+.routine-card h3 {
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.routine-card p {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.routine-sequence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  margin: 0.3rem 0 0.2rem;
+}
+
+.chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-focus { background: var(--focus-soft); color: var(--focus); }
+.chip-short { background: var(--short-soft); color: var(--short); }
+.chip-long  { background: var(--long-soft); color: var(--long); }
+
+.routine-btn {
+  margin-top: 0.6rem;
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.routine-btn:hover {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.routine-card.is-loaded {
+  border-color: var(--focus);
+}
+.routine-card.is-loaded .routine-btn {
+  background: var(--focus);
+  border-color: var(--focus);
+  color: var(--surface);
+}
+
+/* ===================== How it works ===================== */
+
+.how {
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  padding-bottom: 1rem;
+}
+
+.how-item {
+  border-top: 2px solid var(--ink);
+  padding-top: 0.75rem;
+}
+
+.how-mark {
+  display: block;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  color: var(--accent);
+}
+
+.how-item p {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ===================== Footer ===================== */
+
+.site-footer {
+  margin-top: 3.5rem;
+  padding: 2rem 0 3rem;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 0.82rem;
+  border-top: 1px solid var(--surface-line);
+}
+
+/* ===================== Responsive ===================== */
+
+@media (max-width: 620px) {
+  .routine-grid { grid-template-columns: 1fr; }
+  .how { grid-template-columns: 1fr; gap: 1.5rem; }
+  .customize-grid { grid-template-columns: 1fr; }
+  .mode-btn { padding: 0.5rem 0.8rem; font-size: 0.82rem; }
+}
+
+/* ===================== Reduced motion ===================== */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
